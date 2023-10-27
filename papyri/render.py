@@ -1244,10 +1244,13 @@ def _ascii_env():
 
 
 async def _ascii_render(key: Key, store: GraphStore, known_refs=None, template=None):
+    print("I am in _ascii_render")
+    
     assert store is not None
     assert isinstance(store, GraphStore)
     ref = key.path
 
+    print("calling _ascii_env")
     env, template = _ascii_env()
 
     doc_blob = encoder.decode(store.get(key))
@@ -1255,7 +1258,7 @@ async def _ascii_render(key: Key, store: GraphStore, known_refs=None, template=N
 
     # exercise the reprs
     assert str(doc_blob)
-
+    print("leaving _ascii_env")
     return old_render_one(
         store,
         parts={},
@@ -1272,8 +1275,11 @@ async def _ascii_render(key: Key, store: GraphStore, known_refs=None, template=N
 
 async def ascii_render(name, store=None):
     gstore = GraphStore(ingest_dir, {})
+    from papyri import examples
+    print(f"{examples=}")
+    print(f'{gstore.glob((None, None, "module", "papyri.examples"))=}')
     key = next(iter(gstore.glob((None, None, "module", "papyri.examples"))))
-
+    print("In ascii_render, before await")
     builtins.print(await _ascii_render(key, gstore))
 
 
