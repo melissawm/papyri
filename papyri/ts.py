@@ -713,12 +713,13 @@ class TSVisitor:
         assert self.bytes[_dotdot.start_byte : _dotdot.end_byte].decode() == ".."
         assert sub.type == "substitution"
         assert directive.type == "directive"
-        return [
-            SubstitutionDef(
-                value=self.bytes[sub.start_byte : sub.end_byte].decode(),
-                children=self.visit_directive(directive),
-            )
-        ]
+        print("HERE")
+        node = SubstitutionDef(
+            value = self.bytes[sub.start_byte : sub.end_byte].decode(),
+            children = self.visit_directive(directive),
+        )
+        print(f"{node=}")
+        return [node]
 
     def visit_comment(self, node):
         # TODO

@@ -159,6 +159,22 @@ class Leaf(Node):
 
 @register(4027)
 class SubstitutionDef(Node):
+    """
+    A Substitution Definition is a placeholder for a regular inline directive.
+
+    For example::
+
+        The |biohazard| symbol must be used on containers used to dispose
+        of medical waste.
+
+        .. |biohazard| image:: biohazard.png
+
+    After the first pass, it should read::
+
+        The .. image:: biohazard.png symbol must be used on containers used to
+        dispose of medical waste.
+
+    """
     value: str
     children: List[MMystDirective]
 
@@ -166,7 +182,10 @@ class SubstitutionDef(Node):
         self.value = value
         assert isinstance(children, list)
         self.children = children
-        pass
+
+
+    def __repr__(self):
+        return f"<SubstitutionDef: ref={self.value} {self.children}>"
 
 
 @register(4041)
@@ -176,6 +195,23 @@ class SubstitutionRef(Leaf):
     """
 
     value: str
+
+@register(4042)
+class Replace(Node):
+    """
+    This is a special node that is used to replace a node with another one.
+
+    This is used for example to replace a directive with a link.
+    """
+
+    value: str
+    replacement: Node
+
+    def __repr__(self):
+        return f"<Replace {self.value=} {self.replacement=}>"
+
+    def __hash__(self):
+        return hash((self.value, self.replacement))
 
 
 @register(4018)
